@@ -1,0 +1,296 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Dictionary Management</h1>
+    <a href="{% url 'home' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-1"></i> Back to Records
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <ul class="nav nav-tabs" id="dictionaryTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="status-tab" data-bs-toggle="tab" data-bs-target="#status" type="button" role="tab">
+                    <i class="fas fa-tag me-1"></i> Statuses
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="type-tab" data-bs-toggle="tab" data-bs-target="#type" type="button" role="tab">
+                    <i class="fas fa-exchange-alt me-1"></i> Types
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="category-tab" data-bs-toggle="tab" data-bs-target="#category" type="button" role="tab">
+                    <i class="fas fa-folder me-1"></i> Categories
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="subcategory-tab" data-bs-toggle="tab" data-bs-target="#subcategory" type="button" role="tab">
+                    <i class="fas fa-folder-open me-1"></i> Subcategories
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content mt-4" id="dictionaryTabsContent">
+            <!-- Statuses Tab -->
+            <div class="tab-pane fade show active" id="status" role="tabpanel">
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Add Status</h5>
+                            </div>
+                            <div class="card-body">
+                                <form method="post" action="{% url 'status_add' %}">
+                                    {% csrf_token %}
+                                    {{ status_form|crispy }}
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-1"></i> Add
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-list me-2"></i>Status List</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th class="text-end">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for status in statuses %}
+                                        <tr>
+                                            <td data-label="Name">{{ status.name }}</td>
+                                            <td data-label="Actions" class="text-end action-buttons">
+                                                <a href="{% url 'status_edit' status.id %}" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="{% url 'status_delete' status.id %}" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="2">
+                                                <div class="empty-state">
+                                                    <i class="fas fa-tag"></i>
+                                                    <p>No statuses found. Add your first status.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Types Tab -->
+            <div class="tab-pane fade" id="type" role="tabpanel">
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Add Type</h5>
+                            </div>
+                            <div class="card-body">
+                                <form method="post" action="{% url 'type_add' %}">
+                                    {% csrf_token %}
+                                    {{ type_form|crispy }}
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-1"></i> Add
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-list me-2"></i>Type List</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th class="text-end">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for type in types %}
+                                        <tr>
+                                            <td data-label="Name">{{ type.name }}</td>
+                                            <td data-label="Actions" class="text-end action-buttons">
+                                                <a href="{% url 'type_edit' type.id %}" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="{% url 'type_delete' type.id %}" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="2">
+                                                <div class="empty-state">
+                                                    <i class="fas fa-exchange-alt"></i>
+                                                    <p>No types found. Add your first type.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Categories Tab -->
+            <div class="tab-pane fade" id="category" role="tabpanel">
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Add Category</h5>
+                            </div>
+                            <div class="card-body">
+                                <form method="post" action="{% url 'category_add' %}">
+                                    {% csrf_token %}
+                                    {{ category_form|crispy }}
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-1"></i> Add
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-list me-2"></i>Category List</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th class="text-end">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for category in categories %}
+                                        <tr>
+                                            <td data-label="Name">{{ category.name }}</td>
+                                            <td data-label="Type">{{ category.type }}</td>
+                                            <td data-label="Actions" class="text-end action-buttons">
+                                                <a href="{% url 'category_edit' category.id %}" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="{% url 'category_delete' category.id %}" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="3">
+                                                <div class="empty-state">
+                                                    <i class="fas fa-folder"></i>
+                                                    <p>No categories found. Add your first category.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Subcategories Tab -->
+            <div class="tab-pane fade" id="subcategory" role="tabpanel">
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Add Subcategory</h5>
+                            </div>
+                            <div class="card-body">
+                                <form method="post" action="{% url 'subcategory_add' %}">
+                                    {% csrf_token %}
+                                    {{ subcategory_form|crispy }}
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-1"></i> Add
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-list me-2"></i>Subcategory List</h5>
+                            </div>
+                            <div class="card-body p-0">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Category</th>
+                                            <th class="text-end">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for subcategory in subcategories %}
+                                        <tr>
+                                            <td data-label="Name">{{ subcategory.name }}</td>
+                                            <td data-label="Category">{{ subcategory.category }}</td>
+                                            <td data-label="Actions" class="text-end action-buttons">
+                                                <a href="{% url 'subcategory_edit' subcategory.id %}" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="{% url 'subcategory_delete' subcategory.id %}" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="3">
+                                                <div class="empty-state">
+                                                    <i class="fas fa-folder-open"></i>
+                                                    <p>No subcategories found. Add your first subcategory.</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

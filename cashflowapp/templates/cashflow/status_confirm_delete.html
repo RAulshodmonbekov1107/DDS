@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Delete Status</h1>
+<div class="alert alert-danger">
+    <p>Are you sure you want to delete the status "{{ object.name }}"?</p>
+    <p><strong>Warning:</strong> This will also delete all cash flow records with this status.</p>
+</div>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Confirm Delete</button>
+    <a href="{% url 'dictionary' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %} 

@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<h1 class="mb-4">Cash Flow Records</h1>
+
+<div class="card filters-section mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filters</h5>
+        <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="true" aria-controls="filterCollapse">
+            <i class="fas fa-chevron-down"></i>
+        </button>
+    </div>
+    <div class="collapse show" id="filterCollapse">
+        <div class="card-body">
+            <form method="get">
+                <div class="row">
+                    <div class="col-md-2">
+                        {{ filter.form.date_from|as_crispy_field }}
+                    </div>
+                    <div class="col-md-2">
+                        {{ filter.form.date_to|as_crispy_field }}
+                    </div>
+                    <div class="col-md-2">
+                        {{ filter.form.status|as_crispy_field }}
+                    </div>
+                    <div class="col-md-2">
+                        {{ filter.form.type|as_crispy_field }}
+                    </div>
+                    <div class="col-md-2">
+                        {{ filter.form.category|as_crispy_field }}
+                    </div>
+                    <div class="col-md-2">
+                        {{ filter.form.subcategory|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search me-1"></i> Filter
+                    </button>
+                    <a href="{% url 'home' %}" class="btn btn-secondary">
+                        <i class="fas fa-redo me-1"></i> Reset
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Records {% if cashflows %}<span class="record-count">{{ cashflows.count }}</span>{% endif %}</h2>
+    <a href="{% url 'cashflow_add' %}" class="btn btn-success add-record-btn">
+        <i class="fas fa-plus me-1"></i> Add New Record
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Type</th>
+                        <th>Category</th>
+                        <th>Subcategory</th>
+                        <th>Amount (₽)</th>
+                        <th>Comment</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cashflow in cashflows %}
+                    <tr>
+                        <td data-label="Date">{{ cashflow.date|date:"d.m.Y" }}</td>
+                        <td data-label="Status">{{ cashflow.status }}</td>
+                        <td data-label="Type">
+                            {% if cashflow.type.name == 'Income' %}
+                                <span class="badge bg-success">{{ cashflow.type }}</span>
+                            {% else %}
+                                <span class="badge bg-danger">{{ cashflow.type }}</span>
+                            {% endif %}
+                        </td>
+                        <td data-label="Category">{{ cashflow.category }}</td>
+                        <td data-label="Subcategory">{{ cashflow.subcategory }}</td>
+                        <td data-label="Amount">
+                            {% if cashflow.type.name == 'Income' %}
+                                <span class="amount-positive">+{{ cashflow.amount }} ₽</span>
+                            {% else %}
+                                <span class="amount-negative">-{{ cashflow.amount }} ₽</span>
+                            {% endif %}
+                        </td>
+                        <td data-label="Comment">{{ cashflow.comment|truncatechars:50|default:"-" }}</td>
+                        <td data-label="Actions" class="action-buttons">
+                            <a href="{% url 'cashflow_edit' cashflow.id %}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'cashflow_delete' cashflow.id %}" class="btn btn-sm btn-danger">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8">
+                            <div class="empty-state">
+                                <i class="fas fa-search"></i>
+                                <p>No records found. Try adjusting your filters or add a new record.</p>
+                                <a href="{% url 'cashflow_add' %}" class="btn btn-primary">
+                                    <i class="fas fa-plus me-1"></i> Add First Record
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

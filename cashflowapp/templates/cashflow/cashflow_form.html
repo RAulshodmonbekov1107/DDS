@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Cash Flow Record</h1>
+    <a href="{% url 'home' %}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-1"></i> Back to Records
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">
+            {% if form.instance.pk %}
+                <i class="fas fa-edit me-2"></i>Edit Cash Flow Details
+            {% else %}
+                <i class="fas fa-plus-circle me-2"></i>Enter Cash Flow Details
+            {% endif %}
+        </h5>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form.date|as_crispy_field }}
+                </div>
+                <div class="col-md-6">
+                    {{ form.status|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    {{ form.type|as_crispy_field }}
+                </div>
+                <div class="col-md-4">
+                    {{ form.category|as_crispy_field }}
+                </div>
+                <div class="col-md-4">
+                    {{ form.subcategory|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form.amount|as_crispy_field }}
+                </div>
+                <div class="col-md-6">
+                    {{ form.comment|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i> Save
+                    </button>
+                    <a href="{% url 'home' %}" class="btn btn-secondary ms-2">
+                        <i class="fas fa-times me-1"></i> Cancel
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $("#id_type").change(function () {
+        const typeId = $(this).val();
+        if (typeId) {
+            $.ajax({
+                url: "{% url 'ajax_get_categories' %}",
+                data: {
+                    'type_id': typeId
+                },
+                success: function (data) {
+                    $("#id_category").html('<option value="">---------</option>');
+                    $("#id_subcategory").html('<option value="">---------</option>');
+                    data.forEach(function (item) {
+                        $("#id_category").append(
+                            `<option value="${item.id}">${item.name}</option>`
+                        );
+                    });
+                }
+            });
+        } else {
+            $("#id_category").html('<option value="">---------</option>');
+            $("#id_subcategory").html('<option value="">---------</option>');
+        }
+    });
+
+    $("#id_category").change(function () {
+        const categoryId = $(this).val();
+        if (categoryId) {
+            $.ajax({
+                url: "{% url 'ajax_get_subcategories' %}",
+                data: {
+                    'category_id': categoryId
+                },
+                success: function (data) {
+                    $("#id_subcategory").html('<option value="">---------</option>');
+                    data.forEach(function (item) {
+                        $("#id_subcategory").append(
+                            `<option value="${item.id}">${item.name}</option>`
+                        );
+                    });
+                }
+            });
+        } else {
+            $("#id_subcategory").html('<option value="">---------</option>');
+        }
+    });
+</script>
+{% endblock %}
